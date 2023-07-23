@@ -1,3 +1,3 @@
 package model
 
-data class Point(private val x: Double, private val y: Double)
+data class Point(var x: Double, var y: Double)
