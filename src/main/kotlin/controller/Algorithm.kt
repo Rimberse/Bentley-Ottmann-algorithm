@@ -10,58 +10,88 @@ import java.util.TreeSet
 import java.util.concurrent.Semaphore
 
 class Algorithm(var inputData: List<Segment>) {
-    private val queue: Queue<Event>;
-    private val tree: NavigableSet<Segment>;
+    private val queue: Queue<Event>
+    private val tree: NavigableSet<Segment>
     private val coordinates: List<Point>
 
     init {
-        queue = PriorityQueue(EventComparator());
-        tree = TreeSet(SegmentComparator());
-        coordinates = ArrayList();
+        queue = PriorityQueue(EventComparator())
+        tree = TreeSet(SegmentComparator())
+        coordinates = ArrayList()
 
         for (segment: Segment in inputData) {
-            queue.add(Event(segment.start, segment, 0));
-            queue.add(Event(segment.end, segment, 1));
+            queue.add(Event(segment.start, segment, 0))
+            queue.add(Event(segment.end, segment, 1))
         }
     }
 
     fun findIntersections() {
         while (!queue.isEmpty()) {
-            val event: Event = queue.poll();
-            val sweepLine: Double = event.value;
+            val event: Event = queue.poll()
+            val sweepLine: Double = event.value
 
             when(event.type) {
                 0 -> {
                     for (segment: Segment in event.segments) {
-                        recalculate(sweepLine);
-                        tree.add(segment);
+                        recalculate(sweepLine)
+                        tree.add(segment)
 
                         if (tree.higher(segment) != null) {
-                            val r: Segment = tree.higher(segment);
-                            reportIntersection(r, segment, sweepLine);
+                            val r: Segment = tree.higher(segment)
+                            reportIntersection(r, segment, sweepLine)
                         }
 
                         if (tree.lower(segment) != null) {
-                            val t: Segment = tree.lower(segment);
-                            reportIntersection(t, segment, sweepLine);
+                            val t: Segment = tree.lower(segment)
+                            reportIntersection(t, segment, sweepLine)
                         }
 
                         if (tree.higher(segment) != null && tree.lower(segment) != null) {
-                            val r: Segment = tree.higher(segment);
-                            val t: Segment = tree.lower(segment);
+                            val r: Segment = tree.higher(segment)
+                            val t: Segment = tree.lower(segment)
+                            removeFuture(t, r)
                         }
                     }
                 }
 
                 1 -> {
+                    for (segment: Segment in event.segments) {
+                        if (tree.higher(segment) != null && tree.lower(segment) != null) {
+                            val r: Segment = tree.higher(segment)
+                            val t: Segment = tree.lower(segment)
+                            reportIntersection(t, r, sweepLine)
+                        }
 
+                        tree.remove(segment)
+                    }
                 }
 
                 2 -> {
+                    val s_1: Segment = event.segments[0];
+                    val s_2: Segment = event.segments[1];
+
 
                 }
             }
         }
+    }
+
+    private fun swap(s1: Segment, s2: Segment) {
+        tree.remove(s1)
+        tree.remove(s2)
+        val value = s1.value
+        s1.value = s2.value
+        s2.value = value
+        tree.add(s1)
+        tree.add(s2)
+    }
+
+
+    private fun removeFuture(s1: Segment, s2: Segment): Boolean {
+        queue.removeAll {
+            it.type == 2 && ((it.segments[0] == s1 && it.segments[1] == s2) || (it.segments[0] == s2 && it.segments[1] == s1))
+        }
+        return true
     }
 
     private fun reportIntersection(s1: Segment, s2: Segment, sweepLine: Double): Boolean {
