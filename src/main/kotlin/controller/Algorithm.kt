@@ -38,11 +38,12 @@ class Algorithm(var inputData: List<Segment>) {
 
                         if (tree.higher(segment) != null) {
                             val r: Segment = tree.higher(segment);
+                            reportIntersection(r, segment, sweepLine);
                         }
 
                         if (tree.lower(segment) != null) {
                             val t: Segment = tree.lower(segment);
-
+                            reportIntersection(t, segment, sweepLine);
                         }
 
                         if (tree.higher(segment) != null && tree.lower(segment) != null) {
@@ -61,6 +62,35 @@ class Algorithm(var inputData: List<Segment>) {
                 }
             }
         }
+    }
+
+    private fun reportIntersection(s1: Segment, s2: Segment, sweepLine: Double): Boolean {
+        val x1 = s1.first().x
+        val y1 = s1.first().y
+        val x2 = s1.second().x
+        val y2 = s1.second().y
+        val x3 = s2.first().x
+        val y3 = s2.first().y
+        val x4 = s2.second().x
+        val y4 = s2.second().y
+        val r = (x2 - x1) * (y4 - y3) - (y2 - y1) * (x4 - x3)
+
+        if (r != 0.0) {
+            val t = ((x3 - x1) * (y4 - y3) - (y3 - y1) * (x4 - x3)) / r
+            val u = ((x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1)) / r
+
+            if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+                val x_c = x1 + t * (x2 - x1)
+                val y_c = y1 + t * (y2 - y1)
+
+                if (x_c > sweepLine) {
+                    queue.add(Event(Point(x_c, y_c), arrayListOf(s1, s2), 2))
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     private fun recalculate(line: Double) {
