@@ -7,12 +7,11 @@ import java.util.NavigableSet
 import java.util.PriorityQueue
 import java.util.Queue
 import java.util.TreeSet
-import java.util.concurrent.Semaphore
 
 class Algorithm(var inputData: List<Segment>) {
-    private val queue: Queue<Event>
-    private val tree: NavigableSet<Segment>
-    private val coordinates: List<Point>
+    val queue: Queue<Event>
+    val tree: NavigableSet<Segment>
+    val coordinates: ArrayList<Point>
 
     init {
         queue = PriorityQueue(EventComparator())
@@ -69,29 +68,38 @@ class Algorithm(var inputData: List<Segment>) {
                 2 -> {
                     val s_1: Segment = event.segments[0];
                     val s_2: Segment = event.segments[1];
+                    swap(s_1, s_2)
 
+                    if (s_1.value < s_2.value) {
+                        if (tree.higher(s_1) != null) {
+                            val r: Segment = tree.higher(s_1);
+                            reportIntersection(r, s_1, sweepLine);
+                            removeFuture(r, s_2);
+                        }
 
+                        if (tree.lower(s_2) != null) {
+                            val t: Segment = tree.lower(s_2);
+                            reportIntersection(t, s_2, sweepLine);
+                            removeFuture(t, s_1);
+                        }
+                    } else {
+                        if (tree.higher(s_2) != null) {
+                            val r: Segment = tree.higher(s_2);
+                            reportIntersection(r, s_2, sweepLine);
+                            removeFuture(r, s_1);
+                        }
+
+                        if (tree.lower(s_1) != null) {
+                            val t: Segment = tree.lower(s_1);
+                            reportIntersection(t, s_1, sweepLine);
+                            removeFuture(t, s_2);
+                        }
+                    }
+
+                    coordinates.add(event.point)
                 }
             }
         }
-    }
-
-    private fun swap(s1: Segment, s2: Segment) {
-        tree.remove(s1)
-        tree.remove(s2)
-        val value = s1.value
-        s1.value = s2.value
-        s2.value = value
-        tree.add(s1)
-        tree.add(s2)
-    }
-
-
-    private fun removeFuture(s1: Segment, s2: Segment): Boolean {
-        queue.removeAll {
-            it.type == 2 && ((it.segments[0] == s1 && it.segments[1] == s2) || (it.segments[0] == s2 && it.segments[1] == s1))
-        }
-        return true
     }
 
     private fun reportIntersection(s1: Segment, s2: Segment, sweepLine: Double): Boolean {
@@ -121,6 +129,23 @@ class Algorithm(var inputData: List<Segment>) {
         }
 
         return false
+    }
+
+    private fun removeFuture(s1: Segment, s2: Segment): Boolean {
+        queue.removeAll {
+            it.type == 2 && ((it.segments[0] == s1 && it.segments[1] == s2) || (it.segments[0] == s2 && it.segments[1] == s1))
+        }
+        return true
+    }
+
+    private fun swap(s1: Segment, s2: Segment) {
+        tree.remove(s1)
+        tree.remove(s2)
+        val value = s1.value
+        s1.value = s2.value
+        s2.value = value
+        tree.add(s1)
+        tree.add(s2)
     }
 
     private fun recalculate(line: Double) {
