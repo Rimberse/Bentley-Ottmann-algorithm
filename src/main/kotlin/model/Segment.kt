@@ -15,7 +15,7 @@ data class Segment(var start: Point, var end: Point) {
         return if (start.x <= end.x) end else start;
     }
 
-    private fun calculateValue(value: Double) {
+    fun calculateValue(value: Double) {
         val x1 = first().x;
         val x2 = second().x;
         val y1 = first().y;
