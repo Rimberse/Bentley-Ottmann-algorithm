@@ -7,15 +7,15 @@ data class Segment(var start: Point, var end: Point) {
         calculateValue(first().x);
     }
 
-    private fun first(): Point {
+    fun first(): Point {
         return if (start.x <= end.x) start else end;
     }
 
-    private fun second(): Point {
+    fun second(): Point {
         return if (start.x <= end.x) end else start;
     }
 
-    private fun calculateValue(value: Double) {
+    fun calculateValue(value: Double) {
         val x1 = first().x;
         val x2 = second().x;
         val y1 = first().y;
