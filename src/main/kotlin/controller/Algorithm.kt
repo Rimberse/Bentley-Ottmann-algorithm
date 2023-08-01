@@ -11,12 +11,12 @@ import java.util.TreeSet
 class Algorithm(var inputData: List<Segment>) {
     val queue: Queue<Event>
     val tree: NavigableSet<Segment>
-    val coordinates: ArrayList<Point>
+    val intersections: ArrayList<Point>
 
     init {
         queue = PriorityQueue(EventComparator())
         tree = TreeSet(SegmentComparator())
-        coordinates = ArrayList()
+        intersections = ArrayList()
 
         for (segment: Segment in inputData) {
             queue.add(Event(segment.start, segment, 0))
@@ -96,7 +96,7 @@ class Algorithm(var inputData: List<Segment>) {
                         }
                     }
 
-                    coordinates.add(event.point)
+                    intersections.add(event.point)
                 }
             }
         }
