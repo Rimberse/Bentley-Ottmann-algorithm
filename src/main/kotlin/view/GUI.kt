@@ -56,8 +56,8 @@ class GUI(private val inputData: List<Segment>, private val intersections: Array
     override fun paint(graphics: Graphics) {
         super.paint(graphics)
         val graphics2D: Graphics2D = graphics as Graphics2D
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
 
         for (s: Segment in inputData) {
             val segment: Line2D.Double = Line2D.Double(s.first().x, s.first().y, s.second().x, s.second().y)
@@ -67,13 +67,13 @@ class GUI(private val inputData: List<Segment>, private val intersections: Array
         if (repaintFlag) {
             graphics2D.drawString("number of intersections: " + this.intersections.size, 40, 70)
 
-            for (p: Point in this.intersections) {
+            for (p: Point in intersections) {
                 val newX: Double = p.x - 6.0 / 2.0
                 val newY: Double = p.y - 6.0 / 2.0
                 val point: Ellipse2D.Double = Ellipse2D.Double(newX, newY, 6.0, 6.0)
                 graphics2D.paint = Color.RED;
                 graphics2D.fill(point);
-                graphics.draw(point);
+                graphics2D.draw(point);
             }
         }
     }

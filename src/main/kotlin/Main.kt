@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
     test.findIntersections()
     val time2: Long = System.currentTimeMillis()
 
+    test.printIntersections()
     val intersections: ArrayList<Point>  = test.intersections;
     GUI(data, intersections);
 

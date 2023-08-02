@@ -20,6 +20,6 @@ data class Segment(var start: Point, var end: Point) {
         val x2 = second().x;
         val y1 = first().y;
         val y2 = second().y;
-        this.value = y1 + ((y2 - y1) / (x2 - x1) * (value - x1));
+        this.value = y1 + (((y2 - y1) / (x2 - x1)) * (value - x1));
     }
 }
