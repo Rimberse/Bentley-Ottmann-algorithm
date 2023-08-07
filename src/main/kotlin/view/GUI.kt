@@ -65,7 +65,7 @@ class GUI(private val inputData: List<Segment>, private val intersections: Array
         }
 
         if (repaintFlag) {
-            graphics2D.drawString("number of intersections: " + this.intersections.size, 40, 70)
+            graphics2D.drawString("Number of intersections: " + this.intersections.size, 40, 70)
 
             for (p: Point in intersections) {
                 val newX: Double = p.x - 6.0 / 2.0
